@@ -1,0 +1,62 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>World Airports Map</title>
+
+    <!-- Leaflet and custom CSS -->
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
+</head>
+<body class="map-page">
+    <div class="container">
+        <!-- Sidebar for User Profile -->
+        <aside class="sidebar">
+            <div class="profile-section">
+                <h2 class="user-name">{{ user.username }}</h2>
+                <p class="user-email">{{ user.email }}</p>
+            </div>
+            <nav class="menu">
+                <button class="menu-item" id="toggle-dashboard-btn">Dashboard</button>
+                <button class="menu-item" id="location-btn">Re-center Map</button>
+                <button class="menu-item" id="find-nearest-btn">Find Nearest Airport</button>
+                <form method="POST" action="{% url 'logout' %}" class="logout-form">
+                    {% csrf_token %}
+                    <button class="menu-item" id="logout-btn" type="submit">Log Out</button>
+                </form>
+            </nav>
+        </aside>
+
+        <!-- Main Map Content -->
+        <main class="map-container">
+            <h1>World Airports Map</h1>
+            <p>Welcome, {{ user.username }}! Your current location is shown below.</p>
+            <div id="map"></div>
+
+            <!-- Dashboard Section -->
+            <div id="dashboard" style="display: none;">
+                <h3>User Dashboard</h3>
+                <p id="user-name">Name: {{ user.username }}</p>
+                <p id="user-email">Email: {{ user.email }}</p>
+
+                <h4>Favorite Airports</h4>
+                <ul id="favorite-airports-list">
+                    <!-- Favorite airports will appear here -->
+                </ul>
+            </div>
+        </main>
+    </div>
+
+    <!-- JSON data for airports -->
+    <script id="airports-data" type="application/json">{{ airports_data|safe }}</script>
+
+    <!-- External JS files and custom map.js -->
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+    <script src="{% static 'map.js' %}"></script>
+</body>
+</html>

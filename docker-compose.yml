@@ -1,0 +1,51 @@
+version: '3'
+
+services:
+  db:
+    image: postgis/postgis
+    environment:
+      POSTGRES_USER: laurawei
+      POSTGRES_PASSWORD: jiaxin233
+      POSTGRES_DB: airports_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data  # Persistent volume for PostgreSQL database
+
+  web:
+    build: .
+    command: ["./wait-for-it.sh", "db:5432", "--", "bash", "-c", "source activate awm_env && python manage.py runserver 0.0.0.0:8000"]
+    environment:
+      - GDAL_LIBRARY_PATH=/usr/lib/libgdal.so  # Set GDAL path
+    volumes:
+      - .:/code  # Mount the current directory for code access
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "laurawei@gmail.com"
+      PGADMIN_DEFAULT_PASSWORD: "jiaxin233"
+    ports:
+      - "5050:80"
+    depends_on:
+      - db
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin  # Persistent volume for PgAdmin data
+
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d  # Mount the custom Nginx config directory
+    ports:
+      - "80:80"  # Expose port 80 for HTTP
+    depends_on:
+      - web
+      - pgadmin
+
+volumes:
+  postgres_data:  # Volume for PostgreSQL
+  pgadmin_data:   # Volume for PgAdmin
