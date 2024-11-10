@@ -3,6 +3,7 @@ import os
 
 # Set GDAL library path for Docker
 os.environ['GDAL_LIBRARY_PATH'] = '/opt/conda/envs/awm_env/lib/libgdal.so'
+os.environ['GDAL_LIBRARY_PATH'] = '/usr/lib/libgdal.so'
 
 
 # Base directory
