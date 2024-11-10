@@ -12,7 +12,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]  
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'airport_locator', 'static')]
+  
 
 # Quick-start development settings - unsuitable for production
 SECRET_KEY = 'django-insecure-=(j(4v@8(9a_eu1^c(2$p=4%45fwpb359*_a68=d$g=^c)p=-m'
