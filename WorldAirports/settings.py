@@ -76,7 +76,7 @@ DATABASES = {
         'NAME': 'airports_db',           
         'USER': 'laurawei',               
         'PASSWORD': 'jiaxin233',          
-        'HOST': 'db',                     
+        'HOST': 'localhost',                     
         'PORT': '5432',
     }
 }
