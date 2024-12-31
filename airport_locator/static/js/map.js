@@ -23,10 +23,16 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
 // Get user location
 let userLat, userLng;
 async function getUserLocation() {
+    const locationLoadingMessage = L.popup()
+        .setLatLng(map.getCenter())
+        .setContent("Retrieving your location...")
+        .openOn(map);
+
     if (navigator.geolocation) {
         return new Promise((resolve, reject) => {
             navigator.geolocation.getCurrentPosition(
                 position => {
+                    map.closePopup(locationLoadingMessage);
                     userLat = position.coords.latitude;
                     userLng = position.coords.longitude;
                     map.setView([userLat, userLng], 12);
@@ -37,6 +43,7 @@ async function getUserLocation() {
                     resolve();
                 },
                 error => {
+                    map.closePopup(locationLoadingMessage);
                     console.error("Geolocation error:", error);
                     alert("Could not retrieve your location.");
                     reject();
@@ -58,7 +65,7 @@ function addAirportMarkers(airportList) {
             .addTo(markers);
 
         // Add event listener for the marker to ask the user if they want to add it to favorites
-        marker.on('click', function() {
+        marker.on('click', function () {
             const isConfirmed = confirm(`Do you want to add ${airport.name} to your favorites?`);
             if (isConfirmed) {
                 addFavoriteAirport({
@@ -79,7 +86,7 @@ function addFavoriteAirport(airport) {
     let favoriteAirports = JSON.parse(localStorage.getItem('favoriteAirports')) || [];
 
     // Check if the airport is already in favorites
-    const airportExists = favoriteAirports.some(fav => 
+    const airportExists = favoriteAirports.some(fav =>
         fav.name === airport.name && fav.city === airport.city && fav.country === airport.country
     );
 
@@ -104,7 +111,7 @@ function removeFavoriteAirport(airport) {
     let favoriteAirports = JSON.parse(localStorage.getItem('favoriteAirports')) || [];
 
     // Filter out the airport to remove it
-    favoriteAirports = favoriteAirports.filter(fav => 
+    favoriteAirports = favoriteAirports.filter(fav =>
         !(fav.name === airport.name && fav.city === airport.city && fav.country === airport.country)
     );
 
@@ -119,6 +126,11 @@ function updateFavoriteAirports() {
     const favoriteAirports = JSON.parse(localStorage.getItem('favoriteAirports')) || [];
     const favoriteList = document.getElementById('favorite-airports-list');
     favoriteList.innerHTML = ''; // Clear current list
+
+    if (favoriteAirports.length === 0) {
+        favoriteList.innerHTML = '<p>No favorite airports added yet.</p>';
+        return;
+    }
 
     favoriteAirports.forEach(airport => {
         const listItem = document.createElement('li');
@@ -162,7 +174,24 @@ document.getElementById('location-btn').addEventListener('click', () => {
 
 // Toggle dashboard visibility
 document.getElementById('toggle-dashboard-btn').addEventListener('click', () => {
-    const dashboard = document.getElementById('dashboard');
-    dashboard.style.display = (dashboard.style.display === 'none') ? 'block' : 'none';
+    const dashboardOverlay = document.getElementById('dashboard-overlay');
+    dashboardOverlay.classList.add('active');
     updateFavoriteAirports();  // Update dashboard with the latest favorites
+});
+
+// Close the dashboard
+document.getElementById('close-dashboard-btn').addEventListener('click', () => {
+    console.log('Close button clicked');
+    const dashboardOverlay = document.getElementById('dashboard-overlay');
+    dashboardOverlay.classList.remove('active');
+});
+
+// Search functionality for airports
+document.getElementById('search-airport').addEventListener('input', (event) => {
+    const query = event.target.value.toLowerCase();
+    const filteredAirports = airports.filter(airport =>
+        airport.name.toLowerCase().includes(query) ||
+        airport.city.toLowerCase().includes(query)
+    );
+    addAirportMarkers(filteredAirports);
 });
