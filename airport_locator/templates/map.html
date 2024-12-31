@@ -7,7 +7,7 @@
     <title>World Airports Map</title>
 
     <!-- Leaflet and custom CSS -->
-    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
@@ -17,8 +17,8 @@
         <!-- Sidebar for User Profile -->
         <aside class="sidebar">
             <div class="profile-section">
-                <h2 class="user-name">{{ user.username }}</h2>
-                <p class="user-email">{{ user.email }}</p>
+                <h2 class="user-name">{{ user.username|default:"Guest" }}</h2>
+                <p class="user-email">{{ user.email|default:"No email available" }}</p>
             </div>
             <nav class="menu">
                 <button class="menu-item" id="toggle-dashboard-btn">Dashboard</button>
@@ -34,21 +34,25 @@
         <!-- Main Map Content -->
         <main class="map-container">
             <h1>World Airports Map</h1>
-            <p>Welcome, {{ user.username }}! Your current location is shown below.</p>
+            <p>Welcome, {{ user.username|default:"Guest" }}! Your current location is shown below.</p>
+            <input type="text" id="search-airport" placeholder="Search airports..." class="search-bar">
             <div id="map"></div>
-
-            <!-- Dashboard Section -->
-            <div id="dashboard" style="display: none;">
-                <h3>User Dashboard</h3>
-                <p id="user-name">Name: {{ user.username }}</p>
-                <p id="user-email">Email: {{ user.email }}</p>
-
-                <h4>Favorite Airports</h4>
-                <ul id="favorite-airports-list">
-                    <!-- Favorite airports will appear here -->
-                </ul>
-            </div>
         </main>
+    </div>
+
+    <!-- Dashboard Section -->
+    <div id="dashboard-overlay" class="hidden">
+        <div id="dashboard">
+            <button id="close-dashboard-btn" class="close-btn">&times;</button>
+            <h3>User Dashboard</h3>
+            <p id="user-name">Name: {{ user.username }}</p>
+            <p id="user-email">Email: {{ user.email }}</p>
+
+            <h4>Favorite Airports</h4>
+            <ul id="favorite-airports-list">
+                <!-- Favorite airports will appear here -->
+            </ul>
+        </div>
     </div>
 
     <!-- JSON data for airports -->
@@ -57,6 +61,6 @@
     <!-- External JS files and custom map.js -->
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
-    <script src="{% static 'map.js' %}"></script>
+    <script src="{% static 'js/map.js' %}"></script>
 </body>
 </html>

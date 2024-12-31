@@ -7,6 +7,24 @@ from django import forms
 from .models import Profile, Airport
 import json
 from django.contrib.auth.models import User
+from rest_framework import generics
+from .models import Airport
+from .serializers import AirportSerializer
+
+# Home view
+def home_view(request):
+    return render(request, 'home.html')
+
+# List and Create API View for Airport
+class AirportListView(generics.ListCreateAPIView):
+    queryset = Airport.objects.all()
+    serializer_class = AirportSerializer
+
+# Retrieve, Update, and Delete API View for a specific Airport
+class AirportDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Airport.objects.all()
+    serializer_class = AirportSerializer
+
 
 # View that reads the location and passes it to the map
 def map_view(request):
