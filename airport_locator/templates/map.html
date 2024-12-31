@@ -2,65 +2,79 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>World Airports Map</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>World Airports Map</title>
 
-    <!-- Leaflet and custom CSS -->
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
+  <!-- Leaflet and MarkerCluster CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
+  
+  <!-- Leaflet Routing Machine CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet-routing-machine/3.2.12/leaflet-routing-machine.css" />
+
+  <!-- Your Custom CSS -->
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body class="map-page">
-    <div class="container">
-        <!-- Sidebar for User Profile -->
-        <aside class="sidebar">
-            <div class="profile-section">
-                <h2 class="user-name">{{ user.username|default:"Guest" }}</h2>
-                <p class="user-email">{{ user.email|default:"No email available" }}</p>
-            </div>
-            <nav class="menu">
-                <button class="menu-item" id="toggle-dashboard-btn">Dashboard</button>
-                <button class="menu-item" id="location-btn">Re-center Map</button>
-                <button class="menu-item" id="find-nearest-btn">Find Nearest Airport</button>
-                <form method="POST" action="{% url 'logout' %}" class="logout-form">
-                    {% csrf_token %}
-                    <button class="menu-item" id="logout-btn" type="submit">Log Out</button>
-                </form>
-            </nav>
-        </aside>
+  <div class="container">
+    <!-- Sidebar for User Profile -->
+    <aside class="sidebar">
+      <div class="profile-section">
+        <h2 class="user-name">{{ user.username|default:"Guest" }}</h2>
+        <p class="user-email">{{ user.email|default:"No email available" }}</p>
+      </div>
+      <nav class="menu">
+        <button class="menu-item" id="toggle-dashboard-btn">Dashboard</button>
+        <button class="menu-item" id="location-btn">Re-center Map</button>
+        <button class="menu-item" id="find-nearest-btn">Find Nearest Airport</button>
+        <form method="POST" action="{% url 'logout' %}" class="logout-form">
+          {% csrf_token %}
+          <button class="menu-item" id="logout-btn" type="submit">Log Out</button>
+        </form>
+      </nav>
+    </aside>
 
-        <!-- Main Map Content -->
-        <main class="map-container">
-            <h1>World Airports Map</h1>
-            <p>Welcome, {{ user.username|default:"Guest" }}! Your current location is shown below.</p>
-            <input type="text" id="search-airport" placeholder="Search airports..." class="search-bar">
-            <div id="map"></div>
-        </main>
+    <!-- Main Map Content -->
+    <main class="map-container">
+      <h1>World Airports Map</h1>
+      <p>Welcome, {{ user.username|default:"Guest" }}! Your current location is shown below.</p>
+      <input type="text" id="search-airport" placeholder="Search airports..." class="search-bar">
+      
+      <!-- Map Container -->
+      <div id="map"></div>
+
+      <!-- Directions Container -->
+      <div id="directions-container"></div>
+
+      <!-- Close Directions Button -->
+      <button id="close-directions-btn" aria-label="Close Directions">Close Directions</button>
+    </main>
+  </div>
+
+  <!-- Dashboard Section -->
+  <div id="dashboard-overlay">
+    <div id="dashboard">
+      <button id="close-dashboard-btn" class="close-btn" aria-label="Close Dashboard">&times;</button>
+      <h3>User Dashboard</h3>
+      <ul id="favorite-airports-list">
+        <!-- Favorite airports will appear here -->
+      </ul>
     </div>
+  </div>
 
-    <!-- Dashboard Section -->
-    <div id="dashboard-overlay" class="hidden">
-        <div id="dashboard">
-            <button id="close-dashboard-btn" class="close-btn">&times;</button>
-            <h3>User Dashboard</h3>
-            <p id="user-name">Name: {{ user.username }}</p>
-            <p id="user-email">Email: {{ user.email }}</p>
+  <!-- JSON data for airports -->
+  <script id="airports-data" type="application/json">
+    {{ airports_data|safe }}
+  </script>
 
-            <h4>Favorite Airports</h4>
-            <ul id="favorite-airports-list">
-                <!-- Favorite airports will appear here -->
-            </ul>
-        </div>
-    </div>
+  <!-- External JS libraries -->
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-routing-machine/3.2.12/leaflet-routing-machine.min.js"></script>
 
-    <!-- JSON data for airports -->
-    <script id="airports-data" type="application/json">{{ airports_data|safe }}</script>
-
-    <!-- External JS files and custom map.js -->
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-    <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
-    <script src="{% static 'js/map.js' %}"></script>
+  <!-- Your Custom JS -->
+  <script src="{% static 'js/map.js' %}"></script>
 </body>
 </html>

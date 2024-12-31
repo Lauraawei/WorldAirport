@@ -5,7 +5,6 @@
     box-sizing: border-box;
 }
 
-
 /* Sticky Footer Layout */
 html, body {
     height: 100%;
@@ -29,304 +28,253 @@ footer {
     margin-top: auto; /* Ensures footer sticks at the bottom */
 }
 
-/* Full Page Background Styling */
-.auth-page {
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-family: 'Arial', sans-serif;
-}
-
-/* Card Design */
-.card {
-    border-radius: 10px;
-    background-color: rgba(255, 255, 255, 0.95);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-}
-
-.card h2 {
-    font-size: 1.8rem;
-    font-weight: bold;
-    color: #333;
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-.card .form-group label {
-    font-size: 0.9rem;
-    font-weight: bold;
-    color: #555;
-}
-
-.card .form-group input {
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 0.95rem;
-    padding: 10px;
-    width: 100%;
-}
-
-.card .form-group input:focus {
-    border-color: #007bff;
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-    outline: none;
-}
-
-.card button {
-    font-size: 1rem;
-    font-weight: bold;
-    border-radius: 4px;
-    transition: all 0.3s ease;
-    padding: 10px;
-    width: 100%;
-}
-
-.card button:hover {
-    background-color: #0056b3;
-    color: white;
-}
-
-/* Button Hover Effects */
-.btn-outline-light {
-    border: 2px solid white;
-    background-color: transparent;
-    color: white;
-    transition: all 0.3s ease;
-}
-
-.btn-outline-light:hover {
-    background-color: white;
-    color: #007bff;
-}
-
-.btn-primary {
-    background-color: #007bff;
-    color: white;
-    border: 2px solid #007bff;
-    transition: all 0.3s ease;
-}
-
-.btn-primary:hover {
-    background-color: white;
-    color: #007bff;
-    border: 2px solid white;
-}
-
-/* Hero Section Enhancements */
-.hero-banner img {
-    border-bottom: 4px solid #007bff;
-}
-
-.hero-overlay {
-    color: white;
-    background: rgba(0, 0, 0, 0.5);
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    height: 100%;
-}
-
-.hero-overlay h1 {
-    font-size: 3.5rem;
-    font-weight: bold;
-    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.4);
-    letter-spacing: 2px;
-    text-transform: uppercase;
-}
-
-.hero-overlay p {
-    font-size: 1.5rem;
-    font-weight: 300;
-    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
-    margin-bottom: 30px;
-}
-
-/* Authentication Form Styling */
-.auth-form {
-    padding: 20px;
-    background-color: rgba(255, 255, 255, 0.9);
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    max-width: 400px;
-    width: 100%;
-}
-
-.auth-form h2 {
-    color: #333;
-    font-weight: 600;
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-.auth-form .form-group {
-    margin-bottom: 20px;
-}
-
-.auth-form input[type="text"],
-.auth-form input[type="password"],
-.auth-form input[type="email"] {
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 14px;
-    padding: 10px;
-    width: 100%;
-}
-
-.auth-form input[type="text"]:focus,
-.auth-form input[type="password"]:focus,
-.auth-form input[type="email"]:focus {
-    outline: none;
-    border-color: #6a11cb;
-    box-shadow: 0 0 4px rgba(106, 17, 203, 0.5);
-}
-
-.auth-form button {
-    background-color: #007bff;
-    color: white;
-    padding: 10px;
-    border: none;
-    border-radius: 4px;
-    font-size: 16px;
-    font-weight: bold;
-    transition: background-color 0.3s;
-}
-
-.auth-form button:hover {
-    background-color: #0056b3;
-}
-
-.auth-form .text-center a {
-    color: #007bff;
-    text-decoration: none;
-    font-weight: bold;
-}
-
-.auth-form .text-center a:hover {
-    text-decoration: underline;
-}
-
-/* Header Styling */
-header {
-    display: flex;
-    justify-content: flex-end;
-    background-color: #6a11cb;
-    padding: 10px 20px;
-}
-
-header a {
-    color: #ffffff;
-    margin: 0 10px;
-    text-decoration: none;
-    font-weight: bold;
-}
-
-header a:hover {
-    text-decoration: underline;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    .auth-form {
-        padding: 20px;
-    }
-
-    header {
-        justify-content: center;
-    }
-
-    header a {
-        margin: 5px;
-    }
-
-    .hero-overlay h1 {
-        font-size: 2rem;
-    }
-
-    .hero-overlay p {
-        font-size: 1.2rem;
-    }
-}
-
-/* General Reset */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-/* Map Page Layout */
-.map-page {
-    display: flex;
-    height: 100vh;
-}
-
-.container {
-    display: flex;
-    width: 100%;
-}
-
 /* Sidebar Styling */
 .sidebar {
     width: 300px;
-    background: #f8f9fa;
-    padding: 20px;
-    border-right: 1px solid #ddd;
+    background: linear-gradient(135deg, #1d3557, #457b9d);
+    padding: 25px;
+    color: white;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+    font-family: 'Arial', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+    height: 100vh;
+    position: fixed;
     overflow-y: auto;
 }
 
-.profile-section {
+/* Profile Section */
+.sidebar .profile-section {
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    padding-bottom: 20px;
+    width: 100%;
 }
 
-.menu-item {
-    display: block;
-    background: #007bff;
-    color: white;
+.sidebar .profile-section .user-name {
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin-bottom: 5px;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.sidebar .profile-section .user-email {
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* Menu Items */
+.sidebar .menu-item {
+    width: 90%;
+    text-align: center;
     border: none;
-    padding: 10px 20px;
+    padding: 15px 20px;
     margin: 10px 0;
-    border-radius: 4px;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: bold;
     cursor: pointer;
-    text-align: left;
-    transition: background-color 0.3s;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.menu-item:hover {
-    background-color: #0056b3;
+#toggle-dashboard-btn {
+    background: #f4a261;
+    color: white;
+}
+
+#toggle-dashboard-btn:hover {
+    background: #e76f51;
+}
+
+#location-btn {
+    background: #2a9d8f;
+    color: white;
+}
+
+#location-btn:hover {
+    background: #21867a;
+}
+
+#find-nearest-btn {
+    background: #457b9d;
+    color: white;
+}
+
+#find-nearest-btn:hover {
+    background: #1d3557;
+}
+
+#logout-btn {
+    background: #e63946;
+    color: white;
+}
+
+#logout-btn:hover {
+    background: #b51734;
 }
 
 /* Map Container */
 .map-container {
     flex: 1;
     padding: 20px;
+    margin-left: 300px; /* Account for fixed sidebar */
+    background: linear-gradient(135deg, #1d3557, #457b9d);
+}
+
+.map-container h1 {
+    color: white;
+    font-size: 2rem;
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);
+    margin-bottom: 10px;
+}
+
+.map-container p {
+    color: white;
+    font-size: 1rem;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+    margin-bottom: 20px;
+}
+
+/* Map Styling */
+#map {
+    width: 100%;
+    height: calc(100vh - 140px);
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* Search Bar */
 .search-bar {
+    display: block;
     width: 100%;
     max-width: 400px;
-    margin-bottom: 20px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    margin: 20px auto;
+    padding: 10px 15px;
+    font-size: 1rem;
+    border-radius: 8px;
+    border: 2px solid #1d3557;
+    background-color: #f1f1f1;
+    color: #333;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    text-align: center;
 }
 
-/* Dashboard Overlay (Full-Screen Background) */
+.search-bar:focus {
+    outline: none;
+    border-color: #2a9d8f;
+    background-color: white;
+    box-shadow: 0 0 8px rgba(42, 157, 143, 0.5);
+}
+
+/* Directions Container */
+#directions-container {
+    position: fixed;
+    top: 20%;
+    right: 0;
+    width: 350px;
+    max-height: 80%;
+    background: #ffffff;
+    border-radius: 12px 0 0 12px;
+    box-shadow: -4px 0 8px rgba(0, 0, 0, 0.2);
+    padding: 15px;
+    overflow-y: auto;
+    display: none; /* Will appear upon "Get Directions" */
+    z-index: 1500;
+}
+
+/* Styled "Close Directions" Button */
+#close-directions-btn {
+    position: fixed;
+    bottom: 15px;
+    left: 15px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    font-weight: bold;
+    color: white;
+    background-color: #e63946;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 2000;
+}
+
+#close-directions-btn:hover {
+    background-color: #b51734;
+}
+
+/* Popup Styling */
+.popup-content {
+    font-family: 'Arial', sans-serif;
+    text-align: center;
+}
+
+.popup-content h3 {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 6px;
+}
+
+.popup-content p {
+    font-size: 0.95rem;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+.popup-buttons {
+    display: flex;
+    justify-content: space-around;
+    gap: 8px;
+}
+
+.popup-buttons button {
+    padding: 6px 10px;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+}
+
+.get-directions-btn {
+    background-color: #2a9d8f;
+    color: white;
+}
+
+.get-directions-btn:hover {
+    background-color: #21867a;
+}
+
+.add-favorite-btn {
+    background-color: #f4a261;
+    color: white;
+}
+
+.add-favorite-btn:hover {
+    background-color: #e76f51;
+}
+
+/* Dashboard Overlay */
 #dashboard-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.7);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -336,73 +284,50 @@ header a:hover {
     transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
-/* Dashboard Panel */
-#dashboard {
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    width: 90%;
-    max-width: 600px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    position: relative;
-    text-align: left;
-    animation: slideIn 0.3s ease;
-}
-
-/* Close Button */
-.close-btn {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: transparent;
-    border: none;
-    font-size: 24px;
-    cursor: pointer;
-    color: #333;
-}
-
-/* Show the dashboard when active */
 #dashboard-overlay.active {
     opacity: 1;
     visibility: visible;
 }
 
-/* Animation for Slide-In Effect */
-@keyframes slideIn {
-    from {
-        transform: translateY(-30px);
-        opacity: 0;
-    }
-    to {
-        transform: translateY(0);
-        opacity: 1;
-    }
+/* Dashboard Panel */
+#dashboard {
+    background: #ffffff;
+    padding: 20px 30px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 600px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    position: relative;
+    font-family: 'Arial', sans-serif;
 }
 
-/* Favorite List Styling */
-#favorite-airports-list {
-    list-style: none;
-    padding: 0;
-}
-
-#favorite-airports-list li {
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-#favorite-airports-list li button {
-    background: #dc3545;
-    color: white;
+#close-dashboard-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #333;
+    background: none;
     border: none;
-    padding: 5px 10px;
-    border-radius: 4px;
     cursor: pointer;
 }
 
-#favorite-airports-list li button:hover {
-    background: #c82333;
+#close-dashboard-btn:hover {
+    color: #e63946;
 }
 
+/* Responsive Design */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 240px;
+    }
+
+    .map-container {
+        margin-left: 240px;
+    }
+
+    .sidebar .menu-item {
+        font-size: 0.9rem;
+    }
+}

@@ -8,190 +8,240 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '© OpenStreetMap contributors'
 }).addTo(map);
 
+// Marker cluster layer
 const markers = L.markerClusterGroup();
 map.addLayer(markers);
 
-// Utility: Calculate distance using Haversine formula
+// Keep track of the routing control to remove/hide it later
+let routingControl = null;
+
+// Helper function: Calculate distance using Haversine formula
 function calculateDistance(lat1, lon1, lat2, lon2) {
-    const R = 6371; // Radius of the Earth in km
+    const R = 6371; // Earth's radius (km)
     const dLat = (lat2 - lat1) * Math.PI / 180;
     const dLon = (lon2 - lon1) * Math.PI / 180;
-    const a = Math.sin(dLat / 2) ** 2 + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon / 2) ** 2;
+    const a = Math.sin(dLat / 2) ** 2 +
+              Math.cos(lat1 * Math.PI / 180) *
+              Math.cos(lat2 * Math.PI / 180) *
+              Math.sin(dLon / 2) ** 2;
     return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
 
-// Get user location
-let userLat, userLng;
-async function getUserLocation() {
-    const locationLoadingMessage = L.popup()
-        .setLatLng(map.getCenter())
-        .setContent("Retrieving your location...")
-        .openOn(map);
-
-    if (navigator.geolocation) {
-        return new Promise((resolve, reject) => {
-            navigator.geolocation.getCurrentPosition(
-                position => {
-                    map.closePopup(locationLoadingMessage);
-                    userLat = position.coords.latitude;
-                    userLng = position.coords.longitude;
-                    map.setView([userLat, userLng], 12);
-                    L.marker([userLat, userLng])
-                        .addTo(map)
-                        .bindPopup("<b>Your Location</b><br>You are here!")
-                        .openPopup();
-                    resolve();
-                },
-                error => {
-                    map.closePopup(locationLoadingMessage);
-                    console.error("Geolocation error:", error);
-                    alert("Could not retrieve your location.");
-                    reject();
-                }
-            );
-        });
-    } else {
-        alert("Geolocation is not supported by your browser.");
-    }
-}
-getUserLocation();
-
-// Helper: Add airport markers
+// Add markers for airports
 function addAirportMarkers(airportList) {
     markers.clearLayers();
     airportList.forEach(airport => {
         const marker = L.marker([airport.latitude, airport.longitude])
-            .bindPopup(`<b>${airport.name}</b><br>${airport.city}, ${airport.country}`)
-            .addTo(markers);
+            .bindPopup(`
+                <div class="popup-content">
+                    <h3>${airport.name}</h3>
+                    <p>${airport.city}, ${airport.country}</p>
+                    <div class="popup-buttons">
+                        <button class="get-directions-btn" data-lat="${airport.latitude}" data-lng="${airport.longitude}">Get Directions</button>
+                        <button class="add-favorite-btn" data-name="${airport.name}" data-city="${airport.city}" data-country="${airport.country}">Add to Favorites</button>
+                    </div>
+                </div>
+            `);
+        marker.addTo(markers);
+    });
 
-        // Add event listener for the marker to ask the user if they want to add it to favorites
-        marker.on('click', function () {
-            const isConfirmed = confirm(`Do you want to add ${airport.name} to your favorites?`);
-            if (isConfirmed) {
-                addFavoriteAirport({
-                    name: airport.name,
-                    city: airport.city,
-                    country: airport.country
-                });
-            }
-        });
+    // Listen for popup open, attach button events
+    map.on('popupopen', (e) => {
+        const popupElement = e.popup.getElement();
+
+        // "Get Directions" button
+        const directionsBtn = popupElement.querySelector('.get-directions-btn');
+        if (directionsBtn) {
+            directionsBtn.addEventListener('click', () => {
+                const airportLat = parseFloat(directionsBtn.getAttribute('data-lat'));
+                const airportLng = parseFloat(directionsBtn.getAttribute('data-lng'));
+
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(position => {
+                        const userLat = position.coords.latitude;
+                        const userLng = position.coords.longitude;
+
+                        // If a route exists, remove it first
+                        if (routingControl) {
+                            map.removeControl(routingControl);
+                        }
+
+                        // Create a new routing control with a custom itinerary container
+                        routingControl = L.Routing.control({
+                            waypoints: [
+                                L.latLng(userLat, userLng),
+                                L.latLng(airportLat, airportLng)
+                            ],
+                            routeWhileDragging: true,
+                            itinerary: {
+                                container: L.DomUtil.get('directions-container')
+                            }
+                        }).addTo(map);
+
+                        // Show the directions container
+                        const directionsContainer = document.getElementById('directions-container');
+                        directionsContainer.style.display = 'block';
+                    });
+                } else {
+                    alert("Geolocation is not supported by your browser.");
+                }
+            });
+        }
+
+        // "Add to Favorites" button
+        const addFavBtn = popupElement.querySelector('.add-favorite-btn');
+        if (addFavBtn) {
+            addFavBtn.addEventListener('click', () => {
+                const airportData = {
+                    name: addFavBtn.getAttribute('data-name'),
+                    city: addFavBtn.getAttribute('data-city'),
+                    country: addFavBtn.getAttribute('data-country')
+                };
+                addFavoriteAirport(airportData);
+            });
+        }
     });
 }
 
-// Add all airport markers initially
+// Populate initial markers
 addAirportMarkers(airports);
 
-// Add airport to favorites in localStorage
+// Local storage for favorites
 function addFavoriteAirport(airport) {
     let favoriteAirports = JSON.parse(localStorage.getItem('favoriteAirports')) || [];
-
-    // Check if the airport is already in favorites
-    const airportExists = favoriteAirports.some(fav =>
-        fav.name === airport.name && fav.city === airport.city && fav.country === airport.country
+    const alreadyExists = favoriteAirports.some(a =>
+        a.name === airport.name &&
+        a.city === airport.city &&
+        a.country === airport.country
     );
 
-    if (!airportExists) {
-        // Add the airport to the list of favorites
-        favoriteAirports.push({
-            name: airport.name,
-            city: airport.city,
-            country: airport.country
-        });
-
-        // Save the updated favorite airports to localStorage
+    if (!alreadyExists) {
+        favoriteAirports.push(airport);
         localStorage.setItem('favoriteAirports', JSON.stringify(favoriteAirports));
-        updateFavoriteAirports();  // Update dashboard list after adding
+        updateFavoriteAirports();
+        alert(`${airport.name} added to your favorites.`);
     } else {
         alert(`${airport.name} is already in your favorites.`);
     }
 }
 
-// Remove airport from favorites in localStorage
-function removeFavoriteAirport(airport) {
-    let favoriteAirports = JSON.parse(localStorage.getItem('favoriteAirports')) || [];
-
-    // Filter out the airport to remove it
-    favoriteAirports = favoriteAirports.filter(fav =>
-        !(fav.name === airport.name && fav.city === airport.city && fav.country === airport.country)
-    );
-
-    // Save the updated favorites back to localStorage
-    localStorage.setItem('favoriteAirports', JSON.stringify(favoriteAirports));
-    updateFavoriteAirports();  // Update dashboard list after removal
-    alert(`${airport.name} has been removed from your favorites.`);
-}
-
-// Update the favorite airports section in the dashboard
 function updateFavoriteAirports() {
     const favoriteAirports = JSON.parse(localStorage.getItem('favoriteAirports')) || [];
     const favoriteList = document.getElementById('favorite-airports-list');
-    favoriteList.innerHTML = ''; // Clear current list
+    favoriteList.innerHTML = '';
 
     if (favoriteAirports.length === 0) {
         favoriteList.innerHTML = '<p>No favorite airports added yet.</p>';
         return;
     }
 
-    favoriteAirports.forEach(airport => {
-        const listItem = document.createElement('li');
-        listItem.textContent = `${airport.name} - ${airport.city}, ${airport.country}`;
+    favoriteAirports.forEach(a => {
+        const li = document.createElement('li');
+        li.textContent = `${a.name} - ${a.city}, ${a.country}`;
 
-        // Add a delete button for each airport
-        const deleteButton = document.createElement('button');
-        deleteButton.textContent = 'Delete';
-        deleteButton.classList.add('delete-btn'); // Add styling class
-        deleteButton.addEventListener('click', () => removeFavoriteAirport(airport));
+        const deleteBtn = document.createElement('button');
+        deleteBtn.textContent = 'Delete';
+        deleteBtn.classList.add('delete-btn');
+        deleteBtn.addEventListener('click', () => removeFavoriteAirport(a));
 
-        listItem.appendChild(deleteButton);
-        favoriteList.appendChild(listItem);
+        li.appendChild(deleteBtn);
+        favoriteList.appendChild(li);
     });
 }
 
+function removeFavoriteAirport(airport) {
+    let favoriteAirports = JSON.parse(localStorage.getItem('favoriteAirports')) || [];
+    favoriteAirports = favoriteAirports.filter(a =>
+        !(a.name === airport.name && a.city === airport.city && a.country === airport.country)
+    );
+    localStorage.setItem('favoriteAirports', JSON.stringify(favoriteAirports));
+    updateFavoriteAirports();
+}
+
+// Re-center map on user's location
+document.getElementById('location-btn').addEventListener('click', () => {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(pos => {
+            const { latitude, longitude } = pos.coords;
+            map.setView([latitude, longitude], 12);
+            L.marker([latitude, longitude])
+                .addTo(map)
+                .bindPopup("<b>Your Location</b><br>You are here!")
+                .openPopup();
+        });
+    } else {
+        alert("Geolocation is not supported by your browser.");
+    }
+});
+
 // Find nearest airport
 document.getElementById('find-nearest-btn').addEventListener('click', () => {
-    if (userLat && userLng) {
-        let nearestAirport = airports.reduce((nearest, airport) => {
-            const distance = calculateDistance(userLat, userLng, airport.latitude, airport.longitude);
-            return distance < nearest.distance ? { airport, distance } : nearest;
-        }, { airport: null, distance: Infinity });
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(pos => {
+            const userLat = pos.coords.latitude;
+            const userLng = pos.coords.longitude;
+            let nearestAirport = { airport: null, distance: Infinity };
 
-        if (nearestAirport.airport) {
-            const { airport, distance } = nearestAirport;
-            L.popup()
-                .setLatLng([airport.latitude, airport.longitude])
-                .setContent(`<b>${airport.name}</b><br>${airport.city}, ${airport.country}<br>Distance: ${distance.toFixed(2)} km`)
-                .openOn(map);
-        }
+            airports.forEach(a => {
+                const dist = calculateDistance(userLat, userLng, a.latitude, a.longitude);
+                if (dist < nearestAirport.distance) {
+                    nearestAirport = { airport: a, distance: dist };
+                }
+            });
+
+            if (nearestAirport.airport) {
+                const { airport, distance } = nearestAirport;
+                map.setView([airport.latitude, airport.longitude], 12);
+                L.popup()
+                    .setLatLng([airport.latitude, airport.longitude])
+                    .setContent(`
+                        <b>${airport.name}</b><br>
+                        ${airport.city}, ${airport.country}<br>
+                        Distance: ${distance.toFixed(2)} km
+                    `)
+                    .openOn(map);
+            }
+        });
     } else {
         alert("Please allow access to your location to find the nearest airport.");
     }
 });
 
-// Center map on user's location
-document.getElementById('location-btn').addEventListener('click', () => {
-    if (userLat && userLng) map.setView([userLat, userLng], 12);
-});
-
-// Toggle dashboard visibility
+// Toggle Dashboard
 document.getElementById('toggle-dashboard-btn').addEventListener('click', () => {
-    const dashboardOverlay = document.getElementById('dashboard-overlay');
-    dashboardOverlay.classList.add('active');
-    updateFavoriteAirports();  // Update dashboard with the latest favorites
+    const overlay = document.getElementById('dashboard-overlay');
+    overlay.classList.toggle('active');
+    updateFavoriteAirports();
 });
 
-// Close the dashboard
+// Close Dashboard
 document.getElementById('close-dashboard-btn').addEventListener('click', () => {
-    console.log('Close button clicked');
-    const dashboardOverlay = document.getElementById('dashboard-overlay');
-    dashboardOverlay.classList.remove('active');
+    document.getElementById('dashboard-overlay').classList.remove('active');
 });
 
-// Search functionality for airports
-document.getElementById('search-airport').addEventListener('input', (event) => {
-    const query = event.target.value.toLowerCase();
-    const filteredAirports = airports.filter(airport =>
-        airport.name.toLowerCase().includes(query) ||
-        airport.city.toLowerCase().includes(query)
+// Search Bar with Zoom
+document.getElementById('search-airport').addEventListener('input', e => {
+    const query = e.target.value.toLowerCase().trim();
+    const filtered = airports.filter(a =>
+        a.name.toLowerCase().includes(query) ||
+        a.city.toLowerCase().includes(query) ||
+        a.country.toLowerCase().includes(query)
     );
-    addAirportMarkers(filteredAirports);
+
+    addAirportMarkers(filtered);
+
+    if (filtered.length > 0) {
+        map.setView([filtered[0].latitude, filtered[0].longitude], 12);
+    }
+});
+
+// Close Directions
+document.getElementById('close-directions-btn').addEventListener('click', () => {
+    const directionsContainer = document.getElementById('directions-container');
+    directionsContainer.style.display = 'none';
+
+    if (routingControl) {
+        map.removeControl(routingControl);
+        routingControl = null;
+    }
 });
