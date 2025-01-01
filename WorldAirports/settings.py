@@ -35,7 +35,7 @@ INSTALLED_APPS = [
     'leaflet',
     'airport_locator',
     'rest_framework',
-    'pwa',  # Add PWA functionality
+    'pwa', 
 ]
 
 MIDDLEWARE = [

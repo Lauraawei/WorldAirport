@@ -8,6 +8,28 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '© OpenStreetMap contributors'
 }).addTo(map);
 
+// Automatically center map on user's location
+if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+        (position) => {
+            const { latitude, longitude } = position.coords;
+            // Center the map on user's location
+            map.setView([latitude, longitude], 12);
+            // Add a marker for the user's location
+            L.marker([latitude, longitude])
+                .addTo(map)
+                .bindPopup("<b>Your Location</b><br>You are here!")
+                .openPopup();
+        },
+        (error) => {
+            console.error("Error retrieving location: ", error.message);
+            alert("Unable to retrieve your location. Please enable location services.");
+        }
+    );
+} else {
+    alert("Geolocation is not supported by your browser.");
+}
+
 // Marker cluster layer
 const markers = L.markerClusterGroup();
 map.addLayer(markers);
@@ -21,9 +43,9 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
     const dLat = (lat2 - lat1) * Math.PI / 180;
     const dLon = (lon2 - lon1) * Math.PI / 180;
     const a = Math.sin(dLat / 2) ** 2 +
-              Math.cos(lat1 * Math.PI / 180) *
-              Math.cos(lat2 * Math.PI / 180) *
-              Math.sin(dLon / 2) ** 2;
+        Math.cos(lat1 * Math.PI / 180) *
+        Math.cos(lat2 * Math.PI / 180) *
+        Math.sin(dLon / 2) ** 2;
     return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
 
